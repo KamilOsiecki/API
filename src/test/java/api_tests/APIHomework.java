@@ -1,30 +1,31 @@
 package api_tests;
 
+import automation.data.UserData;
+import automation.request.Users;
+import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static io.restassured.RestAssured.*;
+import static org.hamcrest.Matchers.*;
 
 public class APIHomework extends BaseTest {
 
     //given - request specification
     //when - query params/body etc.
     //then - assertions
+    Users userBody = new Users();
+    UserData userData = new UserData();
 
     @Test
     public void getUsersID() {
+        Response response = userBody.getAllUsers();
+//        ValidatableResponse validatableResponse = response1.then().statusCode(200);
 
-        response = given().spec(requestSpecification)
-                .when().get(users);
-
-        List<Integer> listOfId = response
-                .jsonPath().getList("data.id");
-
-        System.out.println(listOfId);
-        System.out.println(listOfId.get(0));
-        String userID = listOfId.get(0).toString();
+        List<String> usersID = response.jsonPath().getList("data.id");
 
         response.then().statusCode(200);
     }
@@ -32,16 +33,13 @@ public class APIHomework extends BaseTest {
     @Test
     public void getUserByID() {
 
-        response = given().spec(requestSpecification)
-                .when().get(users + "/1");
+        userBody.getUserByID("1")
+                .then().statusCode(200).body("data.email", equalTo(userData.generateData().getEmail())).log().all();
 
-        response.then().statusCode(200).log().all();
-
-        Assertions.assertEquals("george.bluth@reqres.in", response.jsonPath().getString("data.email"));
     }
 
     @Test
-    public void addUser() {
+    public void registerUser() {
 
         String requestBody = """
                 {
