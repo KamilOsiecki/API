@@ -3,7 +3,6 @@ package api_tests;
 import automation.data.UserData;
 import automation.request.Users;
 import io.restassured.response.Response;
-import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +33,7 @@ public class APIHomework extends BaseTest {
     public void getUserByID() {
 
         userBody.getUserByID("1")
-                .then().statusCode(200).body("data.email", equalTo(userData.generateData().getEmail())).log().all();
+                .then().statusCode(200).body("data.email", equalTo(userData.generateExpectedUserData().getEmail())).log().all();
 
     }
 
